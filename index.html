@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Sleep Tracker</title>
+  </head>
+  <body>
+    <header class="head">
+      <h1>Ready for a better sleep quality?</h1>
+      <h3>Welcome to str sleep Tracker</h3>
+    </header>
+    <main>
+      <section id="sleep_form">
+        <form>
+          <label for="date">Date:</label>
+          <input type="date" id="date" name="date" required />
+
+          <label for="bedtime">bedtime:</label>
+          <input type="time" id="bedtime" name="bedtime" required />
+
+          <label for="wakeup">wakeup:</label>
+          <input type="time" id="wakeup" name="wakeup" required />
+          <button type="submit">Log sleep</button>
+        </form>
+      </section>
+      <section class="sleephistory">
+        <h2>Your sleep history</h2>
+        <ul class="sleep-list"></ul>
+      </section>
+      <section id="sleep-stats">
+        <h2>Sleep Statistics</h2>
+        <p>Total Sleep Time: <span id="total-sleep"></span></p>
+        <p>Sleep Quality: <span id="sleep-quality"></span></p>
+        <label for="comments">Comments:</label>
+        <textarea id="comments" name="comments" rows="4" cols="50"></textarea>
+        <section id="latest-sleep-entry"></section>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
