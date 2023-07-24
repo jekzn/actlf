@@ -22,7 +22,7 @@
 
           <label for="wakeup">wakeup:</label>
           <input type="time" id="wakeup" name="wakeup" required />
-          <button type="submit">Log sleep</button>
+          <button type="submit" onclick="clearSleepData()">submit</button>
         </form>
       </section>
       <section class="sleep-history">
@@ -32,9 +32,14 @@
       <section id="sleep-stats">
         <h2>Sleep Statistics</h2>
         <p>Total Sleep Time: <span id="total-sleep"></span></p>
-        <p>Sleep Quality: <span id="sleep-quality"></span></p>
-        <label for="comments">Comments:</label>
-        <textarea id="comments" name="comments" rows="4" cols="50"></textarea>
+        <label for="comments"></label>
+        <textarea
+          id="comments"
+          name="comments"
+          rows="4"
+          cols="50"
+          readonly
+        ></textarea>
         <section id="latest-sleep-entry"></section>
       </section>
     </main>
