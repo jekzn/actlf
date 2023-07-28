@@ -1,37 +1,72 @@
-let sleepData = [];
+const apiUrl = "http://localhost:3000/api";
+
+const sleepData = [];
 
 const sleepForm = document.getElementById("sleep-form");
 const sleepList = document.querySelector(".sleep-list");
 const totalSleepSpan = document.getElementById("total-sleep");
 const commentsTextArea = document.getElementById("comments");
 
-function logSleep(event) {
+function fetchSleepData() {
+  fetch(`${apiUrl}/sleep`)
+    .then((response) => response.json())
+    .then((data) => {
+      sleepData.length = 0;
+      sleepData.push(...data);
+      updateSleepHistory();
+      updateSleepStatistics();
+    })
+    .catch((error) => {
+      console.error("Error fetching sleep data:", error);
+    });
+}
+
+function addSleepData(event) {
   event.preventDefault();
 
   const date = document.getElementById("date").value;
   const bedtime = document.getElementById("bedtime").value;
   const wakeup = document.getElementById("wakeup").value;
 
-  const totalMinutes = calculateTotalMinutes(bedtime, wakeup);
-  const evaluationMessage = getEvaluationMessage(totalMinutes);
-  const newSleepEntry = {
+  const sleepEntry = {
     date,
     bedtime,
     wakeup,
-    evaluation: evaluationMessage,
   };
 
-  sleepData.push(newSleepEntry);
+  fetch(`${apiUrl}/sleep`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(sleepEntry),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Sleep data added:", data);
 
-  updateSleepHistory();
-  updateSleepStatistics();
+      sleepData.push(data);
+
+      updateSleepHistory();
+      updateSleepStatistics();
+
+      sleepForm.reset();
+
+      fetchSleepData();
+    })
+    .catch((error) => {
+      console.error("Error adding sleep data:", error);
+    });
+
   sleepForm.reset();
 }
+
 function calculateTotalMinutes(bedtime, wakeup) {
   const [bedHour, bedMin] = bedtime.split(":").map(Number);
   const [wakeHour, wakeMin] = wakeup.split(":").map(Number);
   return (wakeHour - bedHour) * 60 + (wakeMin - bedMin);
 }
+
 function getEvaluationMessage(totalMinutes) {
   if (totalMinutes < 360) {
     return "You didn't get enough sleep. Consider getting more rest.";
@@ -49,6 +84,7 @@ function updateSleepHistory() {
   });
   sleepList.innerHTML = entriesHTML;
 }
+
 function updateSleepStatistics() {
   const totalMinutes = sleepData.reduce(
     (acc, entry) => acc + calculateTotalMinutes(entry.bedtime, entry.wakeup),
@@ -66,9 +102,21 @@ function updateSleepStatistics() {
 }
 
 function clearSleepData() {
-  sleepData = [];
+  sleepData.length = 0;
   updateSleepHistory();
   updateSleepStatistics();
+
+  fetch(`${apiUrl}/sleep`, {
+    method: "DELETE",
+  })
+    .then(() => {
+      console.log("Sleep data cleared.");
+    })
+    .catch((error) => {
+      console.error("Error clearing sleep data:", error);
+    });
 }
 
-sleepForm.addEventListener("submit", logSleep);
+sleepForm.addEventListener("submit", addSleepData);
+
+fetchSleepData();

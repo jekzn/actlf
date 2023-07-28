@@ -1,68 +1,72 @@
 const express = require("express");
-const Model = require("../models/model");
-
+const Data = require("../models/model");
 const router = express.Router();
 
+const corsOptions = {
+  origin: "http://localhost:8080",
+  methods: "GET, POST",
+};
+
+function calculateTotalMinutes(bedtime, wakeup) {
+  const [bedHour, bedMin] = bedtime.split(":").map(Number);
+  const [wakeHour, wakeMin] = wakeup.split(":").map(Number);
+  return (wakeHour - bedHour) * 60 + (wakeMin - bedMin);
+}
+function getEvaluationMessage(totalMinutes) {
+  if (totalMinutes < 360) {
+    return "You didn't get enough sleep. Consider getting more rest.";
+  } else if (totalMinutes > 480) {
+    return "You slept too much.";
+  } else {
+    return "You slept well!";
+  }
+}
 //post
-router.post("/post", async (req, res) => {
-  const data = new Model({
-    sleep_duration: req.body.sleep_duration,
-    date: req.body.date,
-    sleep_quality: req.body.sleep_quality,
-  });
+router.post("/sleep", async (req, res) => {
+  const { date, bedtime, wakeup } = req.body;
+  const totalMinutes = calculateTotalMinutes(bedtime, wakeup);
+  const evaluation = getEvaluationMessage(totalMinutes);
 
+  const newSleepEntry = new Data({ date, bedtime, wakeup, evaluation });
   try {
-    const dataToSave = await data.save();
-    res.status(200).json(dataToSave);
+    const savedEntry = await newSleepEntry.save();
+
+    res.json(savedEntry);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Failed to save sleep data." });
   }
 });
 
-//get all
-router.get("/getAll", async (req, res) => {
+router.get("/sleep", async (req, res) => {
   try {
-    const data = await Model.find();
-    res.json(data);
+    const allSleepEntries = await Data.find();
+
+    res.json(allSleepEntries);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch sleep data." });
   }
 });
 
-//get w id
-router.get("/getOne/:id", async (req, res) => {
+router.get("/sleep", async (req, res) => {
   try {
-    const data = await Model.findById(req.params.id);
-    res.json(data);
+    const allSleepEntries = await Data.find();
+
+    res.json(allSleepEntries);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch sleep data." });
   }
 });
-
-//update w id
-router.patch("/update/:id", async (req, res) => {
+router.delete("/sleep", async (req, res) => {
   try {
-    const id = req.params.id;
-    const updatedData = req.body;
-    const options = { new: true };
+    await Data.deleteMany({});
 
-    const result = await Model.findByIdAndUpdate(id, updatedData, options);
-
-    res.send(result);
+    res.json({ message: "Sleep data cleared successfully." });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Failed to clear sleep data." });
   }
 });
-
-//del w id
-router.delete("/delete/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const data = await Model.findByIdAndDelete(id);
-    res.send(`Document with ${data.name} has been deleted..`);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
 module.exports = router;
