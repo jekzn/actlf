@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <title>Sleep Tracker</title>
   </head>
   <body>
@@ -15,14 +21,37 @@
       <section id="sleep-form">
         <form>
           <label for="date">Date:</label>
-          <input type="date" id="date" name="date" required />
+          <input
+            type="text"
+            id="date"
+            name="date"
+            placeholder="Date"
+            onfocus="(this.type ='date')"
+            onblur="(this.type ='text')"
+          />
 
           <label for="bedtime">bedtime:</label>
-          <input type="time" id="bedtime" name="bedtime" required />
+          <input
+            type="text"
+            id="bedtime"
+            name="bedtime"
+            required
+            placeholder="Sleep time"
+            onfocus="(this.type ='time')"
+            onblur="(this.type ='text')"
+          />
 
           <label for="wakeup">wakeup:</label>
-          <input type="time" id="wakeup" name="wakeup" required />
-          <button type="submit" onclick="clearSleepData()">submit</button>
+          <input
+            type="text"
+            id="wakeup"
+            name="wakeup"
+            required
+            placeholder="Wakeup time"
+            onfocus="(this.type ='time')"
+            onblur="(this.type ='text')"
+          />
+          <button type="submit" onclick="clearSleepData()">Submit</button>
         </form>
       </section>
       <section class="sleep-history">

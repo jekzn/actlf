@@ -36,7 +36,7 @@ function getEvaluationMessage(totalMinutes) {
   if (totalMinutes < 360) {
     return "You didn't get enough sleep. Consider getting more rest.";
   } else if (totalMinutes > 480) {
-    return "You got more than enough sleep.";
+    return "You slept too much.";
   } else {
     return "You slept well!";
   }
